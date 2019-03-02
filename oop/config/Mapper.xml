@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.Mapper">
+	<!-- Area -->
+	<select id="getAreas" resultType="oop.Area">
+		select * from area
+	</select>
+	<!-- Building -->
+	<select id="getBuildings" parameterType="java.lang.Integer" resultType="oop.Building">
+		select * from building where area_id = #{areaId}
+	</select>
+	<!-- Classroom -->
+	<select id="getClassrooms" parameterType="java.lang.Integer" resultType="oop.Classroom">
+		select * from classroom where building_id = #{buildingId} 
+	</select>
+	<!-- Course -->
+	<select id="getCourses" resultType="oop.Course">
+		select * from course
+	</select>
+	<insert id="addCourse" parameterType="oop.Course" useGeneratedKeys="false" keyProperty="id">
+		insert into course(id, name, state, lab_id) values(#{course.id}, #{course.name}, 
+		#{course.state.getValue()}, #{course.labId})
+	</insert>
+	<delete id="deleteCourse" parameterType="java.lang.Integer">
+		delete from course where id = #{courseId}
+	</delete>
+	<!-- Student -->
+	<update id="changePassword">
+		update student set password = #{password} where id = #{studentId}
+	</update>
+	<!-- Registration -->
+	<select id="getStudentReg" parameterType="java.lang.Integer" resultType="oop.Registration">
+		select * from registration where studentId = ${studentId}
+	</select>
+	<select id="getCourseReg" parameterType="java.lang.Integer" resultType="oop.Registration">
+		select * from registration where courseId = ${courseId}
+	</select>
+	<insert id="addReg">
+		insert into registration(id, courseId, studentId, state) values(#{id}, #{courseId}, #{studentId}, #{state.getValue()})
+	</insert>
+	<delete id="deleteReg">
+		delete from registration where id = #{id} and state = 2
+	</delete>
+</mapper>

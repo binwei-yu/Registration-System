@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.Mapper">
+	<!-- Log -->
+	<select id="validateStudent" resultType="oop.Student">
+		SELECT * FROM student WHERE id = #{id} AND password=#{password}
+	</select>
+	<select id="validateFaculty" resultType="oop.Faculty">
+		SELECT * FROM faculty WHERE id = #{id} AND password=#{password}
+	</select>
+	<!-- Area -->
+	<select id="getAreas" resultType="oop.Area">
+		select * from area
+	</select>
+	<!-- Building -->
+	<select id="getBuildings" parameterType="java.lang.Integer" resultType="oop.Building">
+		select * from building where area_id = #{areaId}
+	</select>
+	<!-- Classroom -->
+	<select id="getClassrooms" parameterType="java.lang.Integer" resultType="oop.Classroom">
+		select * from classroom where building_id = #{buildingId} 
+	</select>
+	<!-- Classes -->
+	<select id="viewClasses" resultType="oop.ClassRecord">
+		SELECT course_id, section FROM class WHERE student_id = #{id}
+	</select>
+	<insert id="addClass" useGeneratedKeys="false">
+		INSERT INTO class(course_id, course_name, student_id, student_name, section) 
+		VALUES(#{courseId}, #{courseName}, #{studentId}, #{studentName}, #{section})
+	</insert>
+	<delete id="dropClass" parameterType="java.lang.String">
+		DELETE FROM class WHERE course_id = #{courseId} AND student_id = #{studentId}
+	</delete>
+	<!-- Student -->
+	<select id="getStudents" resultType="oop.Student">
+		SELECT * FROM student
+	</select>
+	<insert id="addStudent">
+		INSERT INTO student(id, name, division, password) 
+		VALUES(#{id}, #{name}, #{division}, #{password})
+	</insert>
+	<delete id="deleteStudent">
+		DELETE FROM student WHERE id = #{id}
+	</delete>
+	<update id="changePassword">
+		update student set password = #{password} where id = #{studentId}
+	</update>
+	<!-- Faculty -->
+	<select id="getFaculties" resultType="oop.Faculty">
+		SELECT * FROM faculty
+	</select>
+	<insert id="addFaculty">
+		INSERT INTO faculty(id, name, division, password) 
+		VALUES(#{id}, #{name}, #{division}, #{password})
+	</insert>
+	<delete id="deleteFaculty">
+		DELETE FROM faculty WHERE id = #{id}
+	</delete>
+	<!-- Registration -->
+	<select id="getStudentReg" parameterType="java.lang.String" resultType="oop.Registration">
+		SELECT * FROM registration WHERE studentId = #{studentId}
+	</select>
+	<select id="getCourseReg" parameterType="java.lang.String" resultType="oop.Registration">
+		SELECT * FROM registration WHERE course_id = #{courseId} AND state = 2
+	</select>
+	<insert id="addReg">
+		INSERT INTO registration(course_id, course_name, student_id, student_name, section, state) VALUES
+		(#{courseId}, #{courseName}, #{studentId}, #{studentName}, #{section}, #{state})
+	</insert>
+	<update id="cancelReg">
+		UPDATE registration 
+		SET state = #{state}
+		WHERE student_id = #{studentId} AND course_id = #{courseId} AND state = 2
+	</update>
+	<update id="updateReg">
+		UPDATE registration 
+		SET state = #{state}
+		WHERE student_id = #{studentId} AND course_id = #{courseId}
+	</update>
+	<delete id="deleteReg">
+		DELETE FROM registration WHERE student_id = #{studentId} AND course_id = #{courseId}
+	</delete>
+	<!-- Course Proxy -->
+	<!--  <resultMap type="oop.Course" id="CourseResultMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="state" property="state"/>
+        <result column="division" property="division"/>
+        <result column="instructor_id" property="InstructorId"/>
+        <result column="instructor_name" property="InstructorName"/>
+    </resultMap> 
+	<select id="getCourse" resultMap="CourseResultMap">-->
+	<select id="getCourse" resultType="oop.Course">
+		SELECT * FROM course
+	</select>
+	<insert id="addCourse" useGeneratedKeys="false" keyProperty="id">
+		INSERT INTO course(id, name, state, division, instructor_id, instructor_name) 
+		VALUES(#{id}, #{name}, #{state}, #{division}, #{instructorId}, #{instructorName})
+	</insert>
+	<delete id="deleteCourse">
+		DELETE FROM course WHERE id = #{id}
+	</delete>
+	<select id="getSection" parameterType="java.lang.String" resultType="oop.Section">
+		SELECT * FROM section WHERE course=#{courseId}
+	</select>
+	<insert id="addSection">
+		INSERT INTO section(location, start, end, days, lab, course) VALUES(#{location}, #{start}, #{end}, #{days}, 
+		#{lab}, #{course})
+	</insert>
+	<delete id="deleteSection">
+		DELETE FROM section WHERE course=#{courseId}
+	</delete>
+	<!-- clear -->
+	<delete id="clearCourse">
+		DELETE FROM course
+	</delete>
+	<delete id="clearSection">
+		DELETE FROM section
+	</delete>
+</mapper>
